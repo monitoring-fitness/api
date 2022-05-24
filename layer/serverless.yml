@@ -1,0 +1,13 @@
+org: '1304183723'
+app: monitoring-api
+stage: dev
+component: layer
+name: monitoring-api-layer
+inputs:
+  name: monitoring-api-layer
+  region: ap-beijing
+  src:
+    src: ../node_modules
+    targetDir: /node_modules
+  runtimes:
+    - Nodejs12.16
