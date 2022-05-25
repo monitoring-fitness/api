@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/domain/schema/user.schema';
 import { Model } from 'mongoose';
-import { CreateTrainDto } from 'src/core/dto/create-train.dto';
-import { TrainCardCode } from 'src/domain/error-code';
+import { CreateTrainDto } from 'src/core/dto';
+import { TrainCardCode } from 'src/domain/business-code';
 
 const test_id = '628cede68a7254c614b2d563';
 @Injectable()

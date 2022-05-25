@@ -1,8 +1,8 @@
 import { TrainCardService } from './train-card.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateTrainDto } from 'src/core/dto/create-train.dto';
+import { CreateTrainDto } from 'src/core/dto';
 import { HTTPResponse } from 'src/util/HTTPResponse';
-import { TrainCardCode, TrainCardCode2Message } from 'src/domain/error-code';
+import { TrainCardCode, TrainCardCode2Message } from 'src/domain/business-code';
 
 @Controller('train-card')
 export class TrainCardController {
