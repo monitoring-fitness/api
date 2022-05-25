@@ -1,4 +1,4 @@
-enum WeightUnit {
+export enum WeightUnit {
     Lb,
     Kg,
 }
@@ -6,7 +6,7 @@ enum WeightUnit {
 /**
  * 和训练总量关联，
  */
-enum TrainType {
+export enum TrainType {
     Shoulder,
     Chest,
     Back,
