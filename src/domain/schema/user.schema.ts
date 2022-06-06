@@ -4,15 +4,17 @@ import {
   IUserAuth,
   ITrainCard,
   ITrainItem,
-  ITrainItemExecuteInfo,
   WeightUnit,
 } from 'src/core/interface';
 import * as bcrypt from 'bcrypt';
 
 // NOTE: how to create nested json? https://github.com/nestjs/mongoose/issues/839
-
 @Schema({ _id: false })
-export class TrainItemExecuteInfo implements ITrainItemExecuteInfo {
+export class TrainItem implements ITrainItem {
+  @Prop()
+  name: string;
+  @Prop()
+  type: number;
   @Prop()
   weight: number;
   @Prop()
@@ -23,20 +25,7 @@ export class TrainItemExecuteInfo implements ITrainItemExecuteInfo {
   repeat_num: number;
 }
 
-const TrainItemExecuteInfoSchema =
-  SchemaFactory.createForClass(TrainItemExecuteInfo);
-
-@Schema({ _id: false })
-export class TrainItem implements ITrainItem {
-  @Prop()
-  name: string;
-  @Prop()
-  type: number;
-  @Prop({ type: TrainItemExecuteInfoSchema })
-  execute_info: TrainItemExecuteInfo;
-}
-
-const TrainItemSchema = SchemaFactory.createForClass(TrainItem);
+export const TrainItemSchema = SchemaFactory.createForClass(TrainItem);
 
 @Schema()
 export class DefaultCard implements ITrainCard {
@@ -44,6 +33,10 @@ export class DefaultCard implements ITrainCard {
   name: string;
   @Prop()
   memo: string;
+  @Prop()
+  create_time?: number;
+  @Prop()
+  update_time?: number;
   @Prop({ type: [TrainItemSchema] })
   train_program: Array<TrainItem>;
 }
@@ -63,9 +56,9 @@ export class User implements IUserAuth {
   @Prop()
   avatar_url: string;
   @Prop()
-  cur_active_plan_id: number;
+  cur_active_plan_id: string;
   @Prop({ type: [DefaultCardSchema], default: [] })
-  default_cards: DefaultCard[];
+  default_cards: ITrainCard[];
 
   async validatePassword(password: string): Promise<boolean> {
     return (await bcrypt.hash(password, this.salt)) === this.pass_word;

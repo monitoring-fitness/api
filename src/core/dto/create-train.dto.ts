@@ -17,7 +17,12 @@ import {
   WeightUnit,
 } from 'src/core/interface/train-card.interface';
 
-export class TrainItemExecuteInfoDto implements TrainItemExecuteInfoDto {
+export class TrainProgramDto implements ITrainItem {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+  @IsEnum(TrainType)
+  type: TrainType;
   @IsNumber()
   @Min(5)
   @Max(500)
@@ -33,17 +38,6 @@ export class TrainItemExecuteInfoDto implements TrainItemExecuteInfoDto {
   group_num: number; // 组数
 }
 
-export class TrainProgramDto implements ITrainItem {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-  @IsEnum(TrainType)
-  type: TrainType;
-  @ValidateNested({ each: true })
-  @Type(() => TrainItemExecuteInfoDto)
-  execute_info: TrainItemExecuteInfoDto;
-}
-
 export class CreateTrainDto implements ITrainCard {
   @IsString()
   @IsNotEmpty()
@@ -56,5 +50,4 @@ export class CreateTrainDto implements ITrainCard {
   @ValidateNested({ each: true })
   @Type(() => TrainProgramDto)
   train_program: TrainProgramDto[];
-  uid: string; // S-TODO: 如果有jwt鉴权逻辑了，还需要传uid？
 }
