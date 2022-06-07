@@ -6,7 +6,7 @@ import { PlanCode, PlanCode2Message } from 'src/domain/business-code';
 
 @Controller('train-card')
 export class TrainCardController {
-  constructor(private readonly trainCardService: TrainCardService) {}
+  constructor(private readonly trainCardService: TrainCardService) { }
   @Post()
   async create(@Body() dto: CreateTrainDto) {
     try {
@@ -30,6 +30,6 @@ export class TrainCardController {
         PlanCode2Message[PlanCode.successGetAll],
         allCards,
       );
-    } catch (e) {}
+    } catch (e) { }
   }
 }

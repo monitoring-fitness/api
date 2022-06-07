@@ -5,11 +5,10 @@ export interface ISchedules {
   is_giving_up_training: boolean; // 是否放弃今天的训练
   snap_card_id: string; // 使用的卡片id快照,为了能够实现替换未来相关卡片
   train_program: Array<ITrainItem>;
-  // TODO_eating_program: string
 }
 
 export interface IPlan {
-  _id?: number;
+  _id?: string;
   user_id?: string;
   create_time?: number;
   start_time?: number;
@@ -18,6 +17,5 @@ export interface IPlan {
   duration?: number; // 这里强制以周为单位进行
   name?: string;
   explain?: string; // 计划说明
-  // TODO_kr: any
   schedules?: Array<ISchedules>;
 }

@@ -29,7 +29,7 @@ export class PlanService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Plan.name) private planModel: Model<Plan>,
-  ) {}
+  ) { }
 
   public async crete(createPlanDto: CreatePlanDto) {
     //  1. 检查当前用户是否拥有同名计划
@@ -73,7 +73,7 @@ export class PlanService {
       end_time,
     ).map((everyDay, index) => {
       const shouldUseCardId =
-        planDto.trainCardsId[index % planDto.trainCardsId.length];
+        planDto.trainCards[index % planDto.trainCards.length];
 
       const cardEntity: ITrainCard = userRecord.default_cards.find((item) => {
         return item._id.toString() === shouldUseCardId;
