@@ -18,5 +18,5 @@ export class CreatePlanDto
   @IsString()
   @IsNotEmpty()
   explain: string;
-  trainCards: string[];
+  trainCardsId: string[];
 }

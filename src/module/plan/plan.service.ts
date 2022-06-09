@@ -6,7 +6,6 @@ import { CreatePlanDto } from '../../core/dto/create-plan.dto';
 import { Plan } from '../../domain/schema/plan.schema';
 import { IPlan, ISchedules, ITrainCard } from '../../core/interface';
 import * as dayjs from 'dayjs';
-import _ from 'lodash/fp';
 
 const test_id = '628cede68a7254c614b2d563';
 // S-TODO: 找个合适的地方存放 ...
@@ -29,7 +28,7 @@ export class PlanService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Plan.name) private planModel: Model<Plan>,
-  ) { }
+  ) {}
 
   public async crete(createPlanDto: CreatePlanDto) {
     //  1. 检查当前用户是否拥有同名计划
@@ -46,11 +45,19 @@ export class PlanService {
     //  3. 根据训练卡片快照id 填充所有未来日历
     const planEntity = await this.reduceCardToPlanCalendar(createPlanDto);
     //  4. 入库
-    return await this.planModel.create(planEntity);
+    try {
+      const createAns = await this.planModel.create(planEntity);
+      if (createAns) {
+        // S-TODO: 更新用户当前正在执行的计划。
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async getAll() {
-    return (await this.userModel.findById(test_id)).default_cards;
+    const testPlanId = '62a15e24faab15092d60e938';
+    return await this.planModel.findById(testPlanId).exec();
   }
 
   /**
@@ -73,7 +80,7 @@ export class PlanService {
       end_time,
     ).map((everyDay, index) => {
       const shouldUseCardId =
-        planDto.trainCards[index % planDto.trainCards.length];
+        planDto.trainCardsId[index % planDto.trainCardsId.length];
 
       const cardEntity: ITrainCard = userRecord.default_cards.find((item) => {
         return item._id.toString() === shouldUseCardId;
@@ -82,6 +89,7 @@ export class PlanService {
       return {
         date: everyDay,
         snap_card_id: cardEntity._id,
+        snap_card_name: cardEntity.name,
         is_giving_up_training: false,
         train_program: cardEntity.train_program,
       };

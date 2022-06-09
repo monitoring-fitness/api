@@ -11,6 +11,8 @@ export class Schedule implements ISchedules {
   is_giving_up_training: boolean;
   @Prop()
   snap_card_id: string;
+  @Prop()
+  snap_card_name: string;
   @Prop({ type: [TrainItemSchema], default: [] })
   train_program: TrainItem[];
 }
