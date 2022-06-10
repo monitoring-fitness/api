@@ -7,6 +7,8 @@ import { Plan } from '../../domain/schema/plan.schema';
 import { IPlan, ISchedules, ITrainCard } from '../../core/interface';
 import * as dayjs from 'dayjs';
 import { RerankCalendarDto } from '../../core/dto/rerank-calendar.dto';
+import { GiveUpOneDayDto } from '../../core/dto/giveUp-oneDay.dto';
+import { AdjustDailyTrainDto } from '../../core/dto/adjust-daily-train.dto';
 
 const test_id = '628cede68a7254c614b2d563';
 // S-TODO: 找个合适的地方存放 ...
@@ -30,6 +32,29 @@ export class PlanService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Plan.name) private planModel: Model<Plan>,
   ) {}
+  async adjustOneTrainCard(dto: AdjustDailyTrainDto) {
+    const data = await this.planModel.findById(dto.plan_id);
+
+    const targetDailyIdx = data.schedules.findIndex(
+      (i) => i._id.toString() === dto.daily_id,
+    );
+
+    data.schedules[targetDailyIdx].train_program = dto.train_program;
+
+    return this.planModel.findByIdAndUpdate(dto.plan_id, data);
+  }
+
+  async giveUpOneDay(dto: GiveUpOneDayDto) {
+    const data = await this.planModel.findById(dto.plan_id);
+
+    const targetDailyIdx = data.schedules.findIndex(
+      (i) => i._id.toString() === dto.daily_id,
+    );
+
+    data.schedules[targetDailyIdx].is_giving_up_training = true;
+
+    return this.planModel.findByIdAndUpdate(dto.plan_id, data);
+  }
 
   async rerank(dto: RerankCalendarDto) {
     const data = await this.planModel.findById(dto._id);

@@ -5,6 +5,9 @@ import { PlanCode, PlanCode2Message } from 'src/domain/business-code';
 import { CreatePlanDto } from '../../core/dto/create-plan.dto';
 import * as dayjs from 'dayjs';
 import { RerankCalendarDto } from '../../core/dto/rerank-calendar.dto';
+import { GiveUpOneDayDto } from '../../core/dto/giveUp-oneDay.dto';
+import { AdjustDailyTrainDto } from '../../core/dto/adjust-daily-train.dto';
+import { ReplaceOneTrainDto } from '../../core/dto/replace-one-train.dto';
 
 @Controller('plan')
 export class PlanController {
@@ -13,24 +16,26 @@ export class PlanController {
   /**
    * 放弃某一天训练
    */
-  async giveUpOneDay() {
-    return;
+  async giveUpOneDay(@Body() dto: GiveUpOneDayDto) {
+    return await this.planService.giveUpOneDay(dto);
   }
+
+  // S-TODO: 需要一些mongose的技巧 ...
   @Patch('replace')
   /**
    * 替换某一个训练卡片
    */
-  async replaceOneTrainCard() {
+  async replaceOneTrainCard(@Body() dto: ReplaceOneTrainDto) {
     return;
   }
-  @Patch('adjust')
+  @Put('adjust')
   /**
    * 微调某一天的训练卡片
    */
-  async adjustOneTrainCard() {
-    return;
+  async adjustOneTrainCard(@Body() dto: AdjustDailyTrainDto) {
+    return await this.planService.adjustOneTrainCard(dto);
   }
-  @Put()
+  @Patch()
   /**
    * 对日历进行重排操作
    */
