@@ -1,10 +1,11 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { IPlan, ISchedules } from 'src/core/interface';
-import { TrainItem, TrainItemSchema, User, UserSchema } from './user.schema';
+import { TrainItem, TrainItemSchema, User } from './user.schema';
 
 @Schema()
 export class Schedule implements ISchedules {
+  _id: string;
   @Prop()
   date: number;
   @Prop()

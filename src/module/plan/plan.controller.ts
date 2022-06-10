@@ -3,6 +3,8 @@ import { Body, Controller, Get, Patch, Post, Put } from '@nestjs/common';
 import { HTTPResponse } from 'src/util/HTTPResponse';
 import { PlanCode, PlanCode2Message } from 'src/domain/business-code';
 import { CreatePlanDto } from '../../core/dto/create-plan.dto';
+import * as dayjs from 'dayjs';
+import { RerankCalendarDto } from '../../core/dto/rerank-calendar.dto';
 
 @Controller('plan')
 export class PlanController {
@@ -28,14 +30,25 @@ export class PlanController {
   async adjustOneTrainCard() {
     return;
   }
-
+  @Put()
+  /**
+   * 对日历进行重排操作
+   */
+  async reRankCalendar(@Body() dto: RerankCalendarDto) {
+    return await this.planService.rerank(dto);
+  }
+  // S-TODO: 增加特定id注解,来标识要获取的plan
   @Get()
   /**
-   * 获取所有计划
+   * 获取一个指定计划
    */
-  async getAll() {
+  async getOnePlan() {
     const data = await this.planService.getAll();
-    return data.schedules;
+
+    return data.schedules.map((item) => ({
+      ...item,
+      date: dayjs.unix(item.date).format('YYYY-MM-DD'),
+    }));
   }
   @Post() // Put 是幂等的，创建一个计划是非幂等操作（多次创建相同计划是拒绝的），要用POST请求。
   /**

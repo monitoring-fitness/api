@@ -6,6 +6,7 @@ import { CreatePlanDto } from '../../core/dto/create-plan.dto';
 import { Plan } from '../../domain/schema/plan.schema';
 import { IPlan, ISchedules, ITrainCard } from '../../core/interface';
 import * as dayjs from 'dayjs';
+import { RerankCalendarDto } from '../../core/dto/rerank-calendar.dto';
 
 const test_id = '628cede68a7254c614b2d563';
 // S-TODO: 找个合适的地方存放 ...
@@ -30,7 +31,20 @@ export class PlanService {
     @InjectModel(Plan.name) private planModel: Model<Plan>,
   ) {}
 
-  public async crete(createPlanDto: CreatePlanDto) {
+  async rerank(dto: RerankCalendarDto) {
+    const data = await this.planModel.findById(dto._id);
+
+    dto.changed_daily_list.forEach(({ _id, new_date }) => {
+      const idx = data.schedules.findIndex((schedule) => {
+        return schedule._id.toString() === _id;
+      });
+      data.schedules[idx].date = dayjs(new_date).unix();
+    });
+    // S-TODO: 可以不loading 到内存实现更新操作吗？
+    return this.planModel.findByIdAndUpdate(dto._id, data);
+  }
+
+  async crete(createPlanDto: CreatePlanDto) {
     //  1. 检查当前用户是否拥有同名计划
     const curUserPlans = await this.planModel
       .findOne({
@@ -57,7 +71,7 @@ export class PlanService {
 
   async getAll() {
     const testPlanId = '62a15e24faab15092d60e938';
-    return await this.planModel.findById(testPlanId).exec();
+    return await (await this.planModel.findById(testPlanId)).toJSON();
   }
 
   /**
