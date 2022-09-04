@@ -32,7 +32,7 @@ export class TrainProgramDto implements ITrainItem {
   @IsNumber()
   @Min(1)
   @Max(50)
-  repeat_num: number; // 重复次数
+  repeat: number; // 重复次数
   @Min(1)
   @Max(10)
   group_num: number; // 组数

@@ -1,12 +1,31 @@
 import { ITrainItem } from '.';
 
+type ActionDetailType = '热身组' | '正式组'
+
+type ActionList = Array<ITrainItem & {
+  detail_list: Array<{
+    order: number
+    weight: number
+    repeat: number
+    type: ActionDetailType
+  }>
+}>
+
+/**
+ * 训练周期中的一天
+ * 
+ * s-mark: 休息日判断逻辑？
+ */
 export interface ISchedules {
   _id?: string;
   date: number;
   is_giving_up_training: boolean; // 是否放弃今天的训练
   snap_card_id: string; // 使用的卡片id快照,为了能够实现替换未来相关卡片
   snap_card_name: string;
-  train_program: Array<ITrainItem>;
+  /**
+   * 具体要做的动作，以及每组具体做的内容
+   */
+  action_list: ActionList;
 }
 
 export interface IPlan {

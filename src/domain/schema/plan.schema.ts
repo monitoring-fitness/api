@@ -15,7 +15,8 @@ export class Schedule implements ISchedules {
   @Prop()
   snap_card_name: string;
   @Prop({ type: [TrainItemSchema], default: [] })
-  train_program: TrainItem[];
+  // s-todo: 写库逻辑
+  action_list: TrainItem[];
 }
 
 export const scheduleSchema = SchemaFactory.createForClass(Schedule);

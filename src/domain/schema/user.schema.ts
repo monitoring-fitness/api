@@ -22,7 +22,7 @@ export class TrainItem implements ITrainItem {
   @Prop()
   group_num: number;
   @Prop()
-  repeat_num: number;
+  repeat: number;
 }
 
 export const TrainItemSchema = SchemaFactory.createForClass(TrainItem);
