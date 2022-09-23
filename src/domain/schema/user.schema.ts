@@ -3,26 +3,26 @@ import { Document } from 'mongoose';
 import {
   IUserAuth,
   ITrainCard,
-  ITrainItem,
+  TrainProgram,
   WeightUnit,
 } from 'src/core/interface';
 import * as bcrypt from 'bcrypt';
 
 // NOTE: how to create nested json? https://github.com/nestjs/mongoose/issues/839
 @Schema({ _id: false })
-export class TrainItem implements ITrainItem {
+export class TrainItem implements TrainProgram {
   @Prop()
   name: string;
   @Prop()
-  type: number;
+  body_scope: number;
   @Prop()
-  weight: number;
+  group_count: number;
   @Prop()
   weight_unit: WeightUnit;
   @Prop()
-  group_num: number;
+  default_weight: number;
   @Prop()
-  repeat: number;
+  default_repeat: number;
 }
 
 export const TrainItemSchema = SchemaFactory.createForClass(TrainItem);

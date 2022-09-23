@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/domain/schema/user.schema';
 import { Model } from 'mongoose';
 import { CreatePlanDto } from '../../core/dto/create-plan.dto';
-import { Plan } from '../../domain/schema/plan.schema';
-import { IPlan, ISchedules, ITrainCard } from '../../core/interface';
+import { IPlan, ISchedule, ITrainCard } from '../../core/interface';
 import * as dayjs from 'dayjs';
 import { RerankCalendarDto } from '../../core/dto/rerank-calendar.dto';
 import { GiveUpOneDayDto } from '../../core/dto/giveUp-oneDay.dto';
 import { AdjustDailyTrainDto } from '../../core/dto/adjust-daily-train.dto';
+import { Plan } from '../../domain/schema/plan.schema';
 
 const test_id = '628cede68a7254c614b2d563';
 // S-TODO: 找个合适的地方存放 ...
@@ -39,7 +39,10 @@ export class PlanService {
       (i) => i._id.toString() === dto.daily_id,
     );
 
-    data.schedules[targetDailyIdx].train_program = dto.train_program;
+    // s-todo: 可能存在问题
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    data.schedules[targetDailyIdx]?.action_list = dto.train_program;
 
     return this.planModel.findByIdAndUpdate(dto.plan_id, data);
   }
@@ -51,7 +54,7 @@ export class PlanService {
       (i) => i._id.toString() === dto.daily_id,
     );
 
-    data.schedules[targetDailyIdx].is_giving_up_training = true;
+    data.schedules[targetDailyIdx].is_giving_up = true;
 
     return this.planModel.findByIdAndUpdate(dto.plan_id, data);
   }
@@ -63,7 +66,7 @@ export class PlanService {
       const idx = data.schedules.findIndex((schedule) => {
         return schedule._id.toString() === _id;
       });
-      data.schedules[idx].date = dayjs(new_date).unix();
+      data.schedules[idx].perform_date = dayjs(new_date).unix();
     });
     // S-TODO: 可以不loading 到内存实现更新操作吗？
     return this.planModel.findByIdAndUpdate(dto._id, data);
@@ -114,25 +117,28 @@ export class PlanService {
       .add(planDto.duration, 'week')
       .unix();
 
-    const schedules: ISchedules[] = getBetweenDaysUnix(
-      start_time,
-      end_time,
-    ).map((everyDay, index) => {
-      const shouldUseCardId =
-        planDto.trainCardsId[index % planDto.trainCardsId.length];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const schedules: ISchedule[] = getBetweenDaysUnix(start_time, end_time).map(
+      (everyDay, index) => {
+        const shouldUseCardId =
+          planDto.trainCardsId[index % planDto.trainCardsId.length];
 
-      const cardEntity: ITrainCard = userRecord.default_cards.find((item) => {
-        return item._id.toString() === shouldUseCardId;
-      });
+        const cardEntity: ITrainCard = userRecord.default_cards.find((item) => {
+          return item._id.toString() === shouldUseCardId;
+        });
 
-      return {
-        date: everyDay,
-        snap_card_id: cardEntity._id,
-        snap_card_name: cardEntity.name,
-        is_giving_up_training: false,
-        train_program: cardEntity.train_program,
-      };
-    });
+        return {
+          is_giving_up: false,
+          complete_date: -1,
+          perform_date: everyDay,
+          snap_card_id: cardEntity._id,
+          snap_card_name: cardEntity.name,
+          // s-todo: 这里的训练卡片，需要填充具体的default 内容
+          action_list: cardEntity.train_program,
+        };
+      },
+    );
 
     return {
       name: planDto.name,

@@ -50,10 +50,7 @@ export class PlanController {
   async getOnePlan() {
     const data = await this.planService.getAll();
 
-    return data.schedules.map((item) => ({
-      ...item,
-      date: dayjs.unix(item.date).format('YYYY-MM-DD'),
-    }));
+    return data.schedules;
   }
   @Post() // Put 是幂等的，创建一个计划是非幂等操作（多次创建相同计划是拒绝的），要用POST请求。
   /**

@@ -12,30 +12,30 @@ import {
 } from 'class-validator';
 import {
   ITrainCard,
-  ITrainItem,
-  TrainType,
+  TrainProgram,
+  BodyScope,
   WeightUnit,
-} from 'src/core/interface/train-card.interface';
+} from 'src/core/interface/';
 
-export class TrainProgramDto implements ITrainItem {
+export class TrainProgramDto implements TrainProgram {
   @IsString()
   @IsNotEmpty()
   name: string;
-  @IsEnum(TrainType)
-  type: TrainType;
-  @IsNumber()
-  @Min(5)
-  @Max(500)
-  weight: number; // 重量
+  @IsEnum(BodyScope)
+  body_scope: BodyScope;
+  @Min(1)
+  @Max(10)
+  group_count: number; // 组数
   @IsEnum(WeightUnit)
   weight_unit: WeightUnit; // 重量单位
   @IsNumber()
   @Min(1)
   @Max(50)
-  repeat: number; // 重复次数
-  @Min(1)
-  @Max(10)
-  group_num: number; // 组数
+  default_repeat: number; // 重复次数
+  @IsNumber()
+  @Min(5)
+  @Max(500)
+  default_weight: number; // 重量
 }
 
 export class CreateTrainDto implements ITrainCard {

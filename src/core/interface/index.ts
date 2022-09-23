@@ -1,5 +1,5 @@
-
-export * from './jwt-payload.interface';
-export * from './user-auth.interface';
-export * from './train-card.interface';
-export * from './plan.interface'
+export * from './jwt-payload';
+export * from './user-auth';
+export * from './train-card';
+export * from './plan';
+export * from './common';

@@ -4,7 +4,7 @@ import {
   IsNumber,
   IsNotEmpty,
 } from 'class-validator';
-import { IPlan, ISchedules } from '../interface';
+import { IPlan, ISchedule } from '../interface';
 
 export class CreatePlanDto
   implements Pick<IPlan, 'name' | 'explain' | 'duration'>
