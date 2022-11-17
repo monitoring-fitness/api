@@ -7,6 +7,7 @@ export enum BodyScope {
   Hip, // 臀部
   Arm, // 手臂
   Abdomen, // 腹部
+  Total, // 全身
 }
 
 export enum WeightUnit {
@@ -14,7 +15,7 @@ export enum WeightUnit {
   Kg,
 }
 
-export enum ActionDetailType {
+export enum ActionType {
   'warn-up' = 0,
   'formal' = 1,
 }

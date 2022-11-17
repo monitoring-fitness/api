@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { TrainProgramDto } from './create-train.dto';
+import {  } from './train';
 
 export class AdjustDailyTrainDto {
   @IsString()
@@ -15,9 +15,9 @@ export class AdjustDailyTrainDto {
   @IsString()
   @IsNotEmpty()
   daily_id: string;
-  @IsArray()
-  @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => TrainProgramDto)
-  train_program: TrainProgramDto[];
+  // @IsArray()
+  // @ArrayNotEmpty()
+  // @ValidateNested({ each: true })
+  // @Type(() => TrainProgramDto)
+  // train_program: TrainProgramDto[];
 }

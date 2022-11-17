@@ -1,29 +1,34 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
-import { IPlan, ISchedule } from 'src/core/interface';
-import { TrainItem, TrainItemSchema, User } from './user.schema';
+import { Schema as MongooseSchema } from 'mongoose';
+import { ActionSchema, User } from './user.schema';
+import { Plan, Schedule } from '../../core/interface/plan';
 
 @Schema()
-export class Schedule implements Schedule {
+export class SSchedule implements Schedule {
   _id: string;
   @Prop()
   date: number;
+  @Prop()
+  complete_date: number;
+  @Prop()
+  to_perform_date: number;
   @Prop()
   is_giving_up: boolean;
   @Prop()
   snap_card_id: string;
   @Prop()
   snap_card_name: string;
-  @Prop({ type: [TrainItemSchema], default: [] })
+  @Prop({ type: [ActionSchema], default: [] })
   // s-todo: 写库逻辑
-  action_list: TrainItem[];
+  action_list: [];
 }
 
-export const scheduleSchema = SchemaFactory.createForClass(Schedule);
+export const scheduleSchema = SchemaFactory.createForClass(SSchedule);
 
 @Schema()
-export class Plan implements Omit<Plan, 'user_id'> {
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
+export class SPlan implements Omit<Plan, 'user_id'> {
+  // s-todo: 为什么这里要使用ref来引用一下呢？
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: () => User })
   user_id?: User | string;
   @Prop()
   create_time?: number;
@@ -38,8 +43,7 @@ export class Plan implements Omit<Plan, 'user_id'> {
   @Prop()
   explain: string;
   @Prop({ type: [scheduleSchema], default: [] })
-  schedules: ISchedule[];
+  schedules: [];
 }
-export type PlanDocument = IPlan & Document;
 
-export const PlanSchema = SchemaFactory.createForClass(Plan);
+export const PlanSchema = SchemaFactory.createForClass(SPlan);
