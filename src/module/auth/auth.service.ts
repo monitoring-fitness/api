@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { IJwtPayload } from 'src/core/interface';
 import { AuthCredentialDto, AuthLoginDto } from 'src/core/dto';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
 
   async signUp(authCredentialsDto: AuthCredentialDto): Promise<void> {
     const user = new User();
+    user._id = uuidv4();
     user.name = authCredentialsDto.name;
     user.email = authCredentialsDto.email;
     user.avatar_url = authCredentialsDto.avatar_url;

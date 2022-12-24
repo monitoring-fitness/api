@@ -10,7 +10,7 @@ import {
 import { IAction } from '../../core/interface';
 
 // NOTE: how to create nested json? https://github.com/nestjs/mongoose/issues/839
-@Schema()
+@Schema({ _id: false })
 export class Action {
   @Prop()
   name: string;
@@ -28,8 +28,10 @@ export class Action {
 
 export const ActionSchema = SchemaFactory.createForClass(Action);
 
-@Schema()
+@Schema({ _id: false })
 export class TrainingTemplate {
+  @Prop()
+  _id: number;
   @Prop()
   name: string;
   @Prop()
@@ -41,14 +43,15 @@ export class TrainingTemplate {
   @Prop({ type: [ActionSchema] })
   schedule: Array<Action>;
 }
-
 const TrainingTemplateSchema = SchemaFactory.createForClass(TrainingTemplate);
 
 /**
  * s-mark: 如果想做笔记，那应该是一个比较大的模块，而不是插在每个动作里。
  */
-@Schema()
+@Schema({ _id: false })
 export class User implements IUserAuth {
+  @Prop()
+  _id: string;
   @Prop()
   name: string;
   @Prop()
@@ -62,7 +65,7 @@ export class User implements IUserAuth {
   @Prop()
   cur_active_plan_id: string;
   // 训练卡片模板集合
-  @Prop({ type: [TrainingTemplateSchema], default: [], _id: false })
+  @Prop({ type: [TrainingTemplateSchema], default: [] })
   training_templates: Array<TrainingTemplate>;
   // 个人定制化的动作集
   @Prop({ type: [ActionSchema], default: [], _id: false })
@@ -71,4 +74,6 @@ export class User implements IUserAuth {
     return (await bcrypt.hash(password, this.salt)) === this.pass_word;
   }
 }
+
+export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);

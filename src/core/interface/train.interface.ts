@@ -8,7 +8,7 @@ interface TrainSetInfo {
   order: number; // 第几组
   weight: number; // 使用的重量
   repeat: number; // 重复次数
-  rpe: number;
+  rpe: number; // s-todo: 打错了，应该是rep
 }
 
 /**
@@ -41,5 +41,5 @@ export interface ITrainingTemplate {
   name: string;
   create_time: number; // 创建时间
   update_time: number; // 更新时间
-  schedule: Array<IAction>; // 训练计划表
+  schedule: Array<IAction>; // 课表
 }

@@ -19,3 +19,9 @@ export enum ActionType {
   'warn-up' = 0,
   'formal' = 1,
 }
+
+export enum DailyWorkOutStatus {
+  NotStart,
+  GiveUp,
+  Finished,
+}
