@@ -1,7 +1,7 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Action, ActionSchema, User } from './user.schema';
-import { DailyWorkOutStatus } from '../../core/interface';
+import { DailyWorkOutStatus } from '../core/interface';
 
 @Schema({ _id: false })
 export class DailyLife {
@@ -14,7 +14,7 @@ export class DailyLife {
   @Prop()
   snap_card_id: number;
   @Prop({ type: [ActionSchema], default: [] })
-  action_list: Array<Action>;
+  schedule: Array<Action>;
 }
 
 export const DailyLifeSchema = SchemaFactory.createForClass(DailyLife);

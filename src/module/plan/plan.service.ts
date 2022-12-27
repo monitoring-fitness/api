@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'src/domain/schema/user.schema';
-import { Model } from 'mongoose';
+import { TrainingTemplate, User, UserDocument } from 'src/schema/user.schema';
+import { disconnect, Model } from 'mongoose';
 import * as dayjs from 'dayjs';
-import { DailyLife, Plan } from '../../domain/schema/plan.schema';
-import { CreatePlanDto } from '../../core/dto/plan/create-plan.dto';
+import { DailyLife, Plan } from '../../schema/plan.schema';
+import { CreatePlanDto } from './plan.dto';
 import { DailyWorkOutStatus } from '../../core/interface';
-
-const test_id = 'cbae08ef-d132-4b7a-b0c0-0f6fed6cb437';
+import { test_id } from '../train/train.service';
+import { PlanCode } from '../../domain/business-code';
 
 // S-TODO: 找个合适的地方存放 ...
 const getBetweenDaysUnix = (
@@ -70,62 +70,70 @@ export class PlanService {
   //   return this.planModel.findByIdAndUpdate(dto._id, data);
   // }
 
-  async crete(createPlanDto: CreatePlanDto) {
-    //  1. 检查当前用户是否拥有同名计划
-    const curUserPlans = await this.planModel
-      .findOne({
-        user_id: test_id,
-        name: createPlanDto.name,
-      })
-      .exec();
-    if (curUserPlans) {
-      return new Error('当前用户已经存在同名计划');
-    }
-    //  2. 根据训练卡片快照id 填充所有未来日历
-    const planEntity = await this.reduceCardToPlanCalendar(createPlanDto);
-    //  3. 入库
-    try {
-      await this.planModel.create(planEntity);
-    } catch (e) {
-      console.error(e);
-    }
+  // 搞一个user的中间件？
+  // s-todo: 如何将 userRecord 持久化到一个全局的地方呢？方便所有地方读取！
+  async fetchToPerformWorkingLives(timeStamp: number[]): Promise<DailyLife[]> {
+    const userRecord = await this.userModel.findById(test_id).exec();
+    const activePlanId = userRecord.cur_active_plan_id;
+
+    // find the plan
+    const plan = await this.planModel.findById(activePlanId).exec();
+
+    // find the daily life
+    return timeStamp.reduce((memo, curTimestamp) => {
+      const daily = plan.daily_life.find(
+        (i) => i.to_perform_date === curTimestamp,
+      );
+      if (daily) {
+        memo.push(daily);
+      }
+      return memo;
+    }, []);
   }
 
-  // async getAll() {
-  //   const testPlanId = '62a15e24faab15092d60e938';
-  //   return await (await this.planModel.findById(testPlanId)).toJSON();
-  // }
+  async cretePlan(createPlanDto: CreatePlanDto) {
+    const isExited = await this.planModel.exists({
+      user_id: test_id,
+      name: createPlanDto.name,
+    });
 
-  /**
-   * 生成训练日历
-   * @private
-   */
-  private async reduceCardToPlanCalendar(
-    planDto: CreatePlanDto,
-  ): Promise<Plan> {
+    if (isExited) {
+      throw PlanCode.isExist;
+    }
+
     const userRecord = await this.userModel.findById(test_id).exec();
 
     // 查询当前训练计划所引用的训练卡片
-    const templates = planDto.week_cycle_template_id.map((id) =>
+    const templates = createPlanDto.week_cycle_template_id.map((id) =>
       userRecord.training_templates.find((i) => i._id === id),
     );
 
+    const planEntity = await this.generatorPlan(createPlanDto, templates);
+
+    // s-mark: 如何存库失败了，怎么办？ try catch 如何通用处理呢？
+    await this.planModel.create(planEntity);
+  }
+
+  private async generatorPlan(
+    planDto: CreatePlanDto,
+    referenceTemplates: TrainingTemplate[],
+  ): Promise<Plan> {
     // 生成每天的训练内容
-    let currentDay = planDto.start_time;
-    let currentTemplate = 0;
+    let startStamp = planDto.start_time;
+    const endStamp = planDto.end_time;
+    let currTemplateIdx = 0;
     const dailyLife: DailyLife[] = [];
 
-    while (currentDay < planDto.end_time) {
+    while (startStamp < endStamp) {
       dailyLife.push({
         status: DailyWorkOutStatus.NotStart,
-        to_perform_date: currentDay,
+        to_perform_date: startStamp,
         completed_date: -1,
-        snap_card_id: templates[currentTemplate]._id,
-        action_list: templates[currentTemplate].schedule,
+        snap_card_id: referenceTemplates[currTemplateIdx]._id,
+        schedule: referenceTemplates[currTemplateIdx].schedule,
       });
-
-      currentTemplate = (currentTemplate + 1) % templates.length;
-      currentDay = dayjs(currentDay).add(1, 'day').unix();
+      currTemplateIdx = (currTemplateIdx + 1) % referenceTemplates.length;
+      startStamp = dayjs(startStamp).add(1, 'day').unix();
     }
 
     return {

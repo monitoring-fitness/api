@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { BodyScope, ActionBasicInfo } from '../../core/interface';
+import { BodyScope, ActionBasicInfo } from '../core/interface';
 
 @Schema()
 export class SPublicTrainItem implements Omit<ActionBasicInfo, '_id'> {

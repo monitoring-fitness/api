@@ -24,16 +24,15 @@ export class TrainController {
   @Post('template/create')
   async createTrainingTemplate(@Body() training: CreateTrainingTemplateDto) {
     try {
-      const data = await this.trainCardService.createTrainCardTemplate(
-        training,
-      );
+      await this.trainCardService.createTrainCardTemplate(training);
       return new HTTPResponse(
         PlanCode.successCreated,
         PlanCode2Message[PlanCode.successCreated],
-        data,
+        true,
       );
     } catch (error) {
       const code = error as PlanCode;
+      // s-mark: 很不nestjs
       return new HTTPResponse(code, PlanCode2Message[code], null);
     }
   }

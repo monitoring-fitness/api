@@ -6,8 +6,8 @@ export enum PlanCode {
 }
 
 export const PlanCode2Message: Record<PlanCode, string> = {
-  [PlanCode.successCreated]: '卡片创建成功！',
+  [PlanCode.successCreated]: '计划创建成功！',
   [PlanCode.successGetAll]: '所有卡片获取成功！',
-  [PlanCode.isExist]: '卡片存在，不允许重新创建',
+  [PlanCode.isExist]: '同名计划已存在，不允许重新创建',
   [PlanCode.isTest]: '测试',
 };

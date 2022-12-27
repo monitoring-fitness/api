@@ -1,3 +1,3 @@
 export * from './auth-credential.dto';
-export * from './train';
-export * from './plan';
+export * from '../../module/train/train.dto';
+export * from '../../module/plan/plan.dto';

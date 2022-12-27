@@ -7,7 +7,7 @@ import {
   WeightUnit,
 } from 'src/core/interface';
 // s-todo: 这里如何把打包路径 改成~ 或者 @ 呢？
-import { IAction } from '../../core/interface';
+import { IAction } from '../core/interface';
 
 // NOTE: how to create nested json? https://github.com/nestjs/mongoose/issues/839
 @Schema({ _id: false })

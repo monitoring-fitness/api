@@ -52,14 +52,17 @@ export class PlanController {
   //
   //   return data.schedules;
   // }
-  @Post() // Put 是幂等的，创建一个计划是非幂等操作（多次创建相同计划是拒绝的），要用POST请求。
-  /**
-   * 创建一个计划
-   */
-  async create(@Body() dto: CreatePlanDto) {
+  @Get('today/workout')
+  async getTodayWorkout() {
+    const lives = await this.planService.fetchToPerformWorkingLives([
+      dayjs().unix(),
+    ]);
+    return lives?.[0];
+  }
+  @Post('create') // Put 是幂等的，创建一个计划是非幂等操作（多次创建相同计划是拒绝的），要用POST请求。
+  async createPlan(@Body() dto: CreatePlanDto) {
     try {
-      const data = await this.planService.crete(dto);
-      return data;
+      await this.planService.cretePlan(dto);
     } catch (error) {
       const code = error as PlanCode;
       return new HTTPResponse(code, PlanCode2Message[code], null);

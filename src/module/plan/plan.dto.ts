@@ -1,9 +1,9 @@
 import {
-  IsString,
-  IsNumber,
-  IsNotEmpty,
-  IsArray,
   ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
 } from 'class-validator';
 
 export class CreatePlanDto {
