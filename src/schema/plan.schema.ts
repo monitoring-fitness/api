@@ -26,17 +26,15 @@ export class Plan {
   @Prop()
   name: string;
   @Prop()
-  complete_time: number;
-  @Prop()
   memo: string;
   @Prop({ type: [DailyLifeSchema], default: [] })
   daily_life: Array<DailyLife>;
   @Prop()
   create_time: number;
   @Prop()
-  start_time: number;
+  start_time?: number;
   @Prop()
-  end_time: number;
+  end_time?: number;
 }
 
 export const PlanSchema = SchemaFactory.createForClass(Plan);

@@ -1,5 +1,5 @@
 import { TrainService } from './train.service';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { HTTPResponse } from 'src/util/HTTPResponse';
 import { PlanCode, PlanCode2Message } from 'src/domain/business-code';
 import { CreateTrainingTemplateDto } from '../../core/dto/';
@@ -36,15 +36,15 @@ export class TrainController {
       return new HTTPResponse(code, PlanCode2Message[code], null);
     }
   }
-  // @Get()
-  // async getAll() {
-  //   try {
-  //     const allCards = await this.trainCardService.getAll();
-  //     return new HTTPResponse(
-  //       PlanCode.successGetAll,
-  //       PlanCode2Message[PlanCode.successGetAll],
-  //       allCards,
-  //     );
-  //   } catch (e) { }
-  // }
+  @Get('template/all')
+  async getAllTrainingTemplate() {
+    try {
+      const allTemplate = await this.trainCardService.getAllTrainingTemplate();
+      return new HTTPResponse(
+        PlanCode.successGetAll,
+        PlanCode2Message[PlanCode.successGetAll],
+        allTemplate,
+      );
+    } catch (e) {}
+  }
 }

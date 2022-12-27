@@ -18,9 +18,6 @@ export class CreatePlanDto {
   memo: string;
   @IsNumber()
   @IsNotEmpty()
-  complete_time: number;
-  @IsNumber()
-  @IsNotEmpty()
   start_time: number;
   @IsNumber()
   @IsNotEmpty()

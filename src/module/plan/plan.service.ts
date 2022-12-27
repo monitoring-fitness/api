@@ -4,7 +4,7 @@ import { TrainingTemplate, User, UserDocument } from 'src/schema/user.schema';
 import { disconnect, Model } from 'mongoose';
 import * as dayjs from 'dayjs';
 import { DailyLife, Plan } from '../../schema/plan.schema';
-import { CreatePlanDto } from './plan.dto';
+import { CreatePlanDto } from './dto/createPlan.dto';
 import { DailyWorkOutStatus } from '../../core/interface';
 import { test_id } from '../train/train.service';
 import { PlanCode } from '../../domain/business-code';
@@ -142,7 +142,6 @@ export class PlanService {
       memo: planDto.memo,
       daily_life: dailyLife,
       create_time: dayjs().unix(),
-      complete_time: planDto.complete_time,
       start_time: planDto.start_time,
       end_time: planDto.end_time,
     };

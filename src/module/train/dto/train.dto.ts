@@ -15,7 +15,7 @@ import {
   ITrainingTemplate,
   IAction,
   WeightUnit,
-} from '../../core/interface';
+} from '../../../core/interface';
 import { Type } from 'class-transformer';
 
 export class ActionDto {

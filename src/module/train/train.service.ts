@@ -19,6 +19,11 @@ export class TrainService {
   //
   // }
 
+  async getAllTrainingTemplate(): Promise<TrainingTemplate[]> {
+    const user = await this.userModel.findById(test_id);
+    return user.training_templates;
+  }
+
   /**
    * s-mark:
    * 如果有任何异常错误，直接抛出异常，由上层Router 捕获处理，返回给前端
