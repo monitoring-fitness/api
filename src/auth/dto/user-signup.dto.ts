@@ -1,12 +1,10 @@
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
-import { IUserAuth } from 'src/core/interface';
 
-export class AuthCredentialDto implements IUserAuth {
+export class UserSignupDto {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
   name: string;
-
   @IsString()
   @MinLength(8)
   @MaxLength(20)
@@ -16,9 +14,4 @@ export class AuthCredentialDto implements IUserAuth {
   pass_word: string;
   email: string;
   avatar_url: string;
-}
-
-export class AuthLoginDto implements Pick<IUserAuth, 'name' | 'pass_word'> {
-  name: string;
-  pass_word: string;
 }

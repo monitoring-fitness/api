@@ -19,10 +19,15 @@ export class DailyLife {
 
 export const DailyLifeSchema = SchemaFactory.createForClass(DailyLife);
 
-@Schema({ id: true })
+@Schema({ id: false })
 export class Plan {
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: () => User })
-  user_id?: User | string;
+  @Prop()
+  id: string;
+  // s-todo: 这种写法是为了什么？
+  // @Prop({ type: MongooseSchema.Types.ObjectId, ref: () => User })
+  // user_id?: User | string;
+  @Prop()
+  user_id?: string;
   @Prop()
   name: string;
   @Prop()

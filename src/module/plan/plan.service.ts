@@ -70,8 +70,6 @@ export class PlanService {
   //   return this.planModel.findByIdAndUpdate(dto._id, data);
   // }
 
-  // 搞一个user的中间件？
-  // s-todo: 如何将 userRecord 持久化到一个全局的地方呢？方便所有地方读取！
   async fetchToPerformWorkingLives(timeStamp: number[]): Promise<DailyLife[]> {
     const userRecord = await this.userModel.findById(test_id).exec();
     const activePlanId = userRecord.cur_active_plan_id;
@@ -79,6 +77,7 @@ export class PlanService {
     // find the plan
     const plan = await this.planModel.findById(activePlanId).exec();
 
+    console.log('plan is:', plan);
     // find the daily life
     return timeStamp.reduce((memo, curTimestamp) => {
       const daily = plan.daily_life.find(
@@ -91,9 +90,9 @@ export class PlanService {
     }, []);
   }
 
-  async cretePlan(createPlanDto: CreatePlanDto) {
+  async cretePlan(createPlanDto: CreatePlanDto): Promise<boolean> {
     const isExited = await this.planModel.exists({
-      user_id: test_id,
+      user_id: createPlanDto.user_id,
       name: createPlanDto.name,
     });
 
@@ -112,6 +111,11 @@ export class PlanService {
 
     // s-mark: 如何存库失败了，怎么办？ try catch 如何通用处理呢？
     await this.planModel.create(planEntity);
+
+    // 假设创建好计划，就设置为当前正在激活的计划
+    userRecord.cur_active_plan_id = planEntity.id;
+    await this.userModel.findByIdAndUpdate(test_id, userRecord);
+    return true;
   }
 
   private async generatorPlan(
@@ -133,10 +137,11 @@ export class PlanService {
         schedule: referenceTemplates[currTemplateIdx].schedule,
       });
       currTemplateIdx = (currTemplateIdx + 1) % referenceTemplates.length;
-      startStamp = dayjs(startStamp).add(1, 'day').unix();
+      startStamp = dayjs.unix(startStamp).add(1, 'day').unix();
     }
 
     return {
+      id: planDto.name + dayjs().unix(),
       user_id: test_id,
       name: planDto.name,
       memo: planDto.memo,

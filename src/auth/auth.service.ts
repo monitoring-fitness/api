@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../../schema/user.schema';
+import { User } from '../schema/user.schema';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { IJwtPayload } from 'src/core/interface';
-import { AuthCredentialDto, AuthLoginDto } from 'src/core/dto';
+import { UserSignupDto } from 'src/core/dto';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { UserSigninDto } from './dto/user-signin.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(authCredentialsDto: AuthCredentialDto): Promise<void> {
+  async signUp(authCredentialsDto: UserSignupDto): Promise<void> {
     const user = new User();
     user._id = uuidv4();
     user.name = authCredentialsDto.name;
@@ -24,22 +25,17 @@ export class AuthService {
     user.salt = await bcrypt.genSalt();
     user.pass_word = await bcrypt.hash(authCredentialsDto.pass_word, user.salt);
 
-    try {
-      await this.userModel.create(user);
-    } catch (e) {
-      console.error(e);
-    }
+    await this.userModel.create(user);
   }
-  async signIn(
-    loginDto: AuthLoginDto,
-    // ): Promise<{ accessToken: string }> {
-  ): Promise<any> {
-    const userInfo = await this.userModel.findOne({
+
+  async signIn(loginDto: UserSigninDto): Promise<{ accessToken: string }> {
+    // s-todo: 没做密码校验！
+    const isExist = await this.userModel.exists({
       name: loginDto.name,
     });
 
-    if (!userInfo?.name) {
-      return '没账号';
+    if (!isExist) {
+      throw new Error('Invalid credentials');
     }
 
     const payload: IJwtPayload = { username: loginDto.name };

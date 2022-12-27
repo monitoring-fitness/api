@@ -1,17 +1,17 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthCredentialDto, AuthLoginDto } from 'src/core/dto';
+import { UserSignupDto } from 'src/core/dto';
 import { AuthService } from './auth.service';
-import { HTTPResponse } from '../../util/HTTPResponse';
-import { UserAuthCode, UserAuthCode2Message } from '../../domain/business-code';
+import { HTTPResponse } from '../util/HTTPResponse';
+import { UserAuthCode, UserAuthCode2Message } from '../domain/business-code';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
-  async signUp(@Body() authCredentialsDto: AuthCredentialDto) {
-    await this.authService.signUp(authCredentialsDto);
+  async signUp(@Body() userSignupDto: UserSignupDto) {
+    await this.authService.signUp(userSignupDto);
 
     return new HTTPResponse(
       UserAuthCode.successCreated,
@@ -21,7 +21,7 @@ export class AuthController {
   }
 
   @Post('signin')
-  signIn(@Body() loginDto: AuthLoginDto): Promise<{ accessToken: string }> {
+  signIn(@Body() loginDto): Promise<{ accessToken: string }> {
     return this.authService.signIn(loginDto);
   }
 
