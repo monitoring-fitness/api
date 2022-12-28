@@ -18,30 +18,6 @@ import {
 } from '../../core/interface';
 import { Type } from 'class-transformer';
 
-export class ActionDto {
-  // 用来定位当前具体的动作名称
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-  @Min(1)
-  @Max(10)
-  group_count: number;
-  @IsEnum(WeightUnit)
-  weight_unit: WeightUnit;
-  @IsNumber()
-  @Min(1)
-  @Max(50)
-  default_repeat_time: number;
-  @IsNumber()
-  @Min(5)
-  @Max(800)
-  default_weight: number;
-  @IsNumber()
-  @Min(1)
-  @Max(10)
-  default_rpe: number;
-}
-
 export class CreatePrivateActionDto implements Omit<ActionBasicInfo, '_id'> {
   @IsString()
   @IsNotEmpty()

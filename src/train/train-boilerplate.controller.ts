@@ -19,7 +19,7 @@ export class TrainBoilerplateController {
     @Body() boilerplate: CreateTrainBoilerplateDto,
     @User() user: Iuser,
   ) {
-    await this.trainBoilerplateService.create(boilerplate);
+    await this.trainBoilerplateService.create(boilerplate, user);
     return new ResponseSuccess(PlanCode2Message[PlanCode.successCreated]);
   }
   @Get('get/all')

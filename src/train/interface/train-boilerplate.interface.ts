@@ -21,7 +21,6 @@ export class IAction extends Document {
 export interface ITrainBoilerplate extends Document {
   name: string;
   intro: string;
-  is_public: boolean;
   create_author_id: string;
   create_time: number;
   update_time: number;

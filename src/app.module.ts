@@ -1,4 +1,4 @@
-import { TrainModule } from './train/train.module';
+import { TrainBoilerplateModule } from './train/train-boilerplate.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
@@ -13,7 +13,7 @@ import { PlanModule } from './plan/plan.module';
     MongooseModule.forRoot(
       'mongodb://admin:operation_admin_123@49.232.169.249:27017/operation',
     ),
-    TrainModule,
+    TrainBoilerplateModule,
     PlanModule,
     AuthModule,
   ],
