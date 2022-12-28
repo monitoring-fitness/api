@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UserSignupDto } from 'src/core/dto';
+import { User } from 'src/common/decorator/user.decorator';
 import { AuthService } from './auth.service';
-import { HTTPResponse } from '../util/HTTPResponse';
-import { UserAuthCode, UserAuthCode2Message } from '../domain/business-code';
+import { UserSignupDto } from './dto/user-signup.dto';
+import { Iuser } from './interface/user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -12,22 +12,16 @@ export class AuthController {
   @Post('signup')
   async signUp(@Body() userSignupDto: UserSignupDto) {
     await this.authService.signUp(userSignupDto);
-
-    return new HTTPResponse(
-      UserAuthCode.successCreated,
-      UserAuthCode2Message[UserAuthCode.successCreated],
-      null,
-    );
   }
 
   @Post('signin')
-  signIn(@Body() loginDto): Promise<{ accessToken: string }> {
-    return this.authService.signIn(loginDto);
+  async signIn(@Body() loginDto) {
+    return await this.authService.signIn(loginDto);
   }
 
-  @Get('test')
+  @Get('test_auth')
   @UseGuards(AuthGuard())
-  test(@Req() req) {
-    return { msg: 'success' };
+  test(@User() user: Iuser) {
+    return { success: 'success' };
   }
 }

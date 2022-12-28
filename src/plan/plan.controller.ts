@@ -1,8 +1,7 @@
 import { PlanService } from './plan.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { HTTPResponse } from 'src/util/HTTPResponse';
-import { PlanCode, PlanCode2Message } from 'src/domain/business-code';
-import { CreatePlanDto } from '../../core/dto/';
+import { PlanCode } from 'src/common/business-code';
+import { CreatePlanDto } from '../core/dto';
 import * as dayjs from 'dayjs';
 
 @Controller('plan')
@@ -61,7 +60,7 @@ export class PlanController {
       return await this.planService.cretePlan(dto);
     } catch (error) {
       const code = error as PlanCode;
-      return new HTTPResponse(code, PlanCode2Message[code], null);
+      return code;
     }
   }
 }

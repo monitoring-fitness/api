@@ -1,3 +1,3 @@
 export * from '../../auth/dto/user-signup.dto';
-export * from '../../module/train/dto/train.dto';
-export * from '../../module/plan/dto/createPlan.dto';
+export * from '../../train/dto/train.dto';
+export * from '../../plan/dto/createPlan.dto';

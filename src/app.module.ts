@@ -1,8 +1,8 @@
-import { TrainModule } from './module/train/train.module';
+import { TrainModule } from './train/train.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { PlanModule } from './module/plan/plan.module';
+import { PlanModule } from './plan/plan.module';
 
 // import { PlanModule } from './module/plan/plan.module';
 

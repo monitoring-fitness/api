@@ -1,11 +1,6 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import {
-  ActionType,
-  BodyScope,
-  IUserAuth,
-  WeightUnit,
-} from 'src/core/interface';
+import { ActionType, WeightUnit } from 'src/core/interface';
 // s-todo: 这里如何把打包路径 改成~ 或者 @ 呢？
 import { IAction } from '../core/interface';
 
@@ -49,7 +44,7 @@ const TrainingTemplateSchema = SchemaFactory.createForClass(TrainingTemplate);
  * s-mark: 如果想做笔记，那应该是一个比较大的模块，而不是插在每个动作里。
  */
 @Schema({ _id: false })
-export class User implements IUserAuth {
+export class User {
   @Prop()
   _id: string;
   @Prop()

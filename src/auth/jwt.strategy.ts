@@ -1,19 +1,32 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Injectable } from '@nestjs/common';
-import { IJwtPayload } from 'src/core/interface';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { User } from './schema/user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: 'topawesomesecret',
     });
   }
 
-  // CONTINUE: 这个是做什么的？
+  /**
+   * AuthGuard 所使用的验证策略
+   * @param payload
+   */
   async validate(payload: IJwtPayload) {
-    const { username } = payload;
-    return username;
+    debugger;
+    const { name } = payload;
+    const user: User = await this.userModel.findOne({ name });
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user;
   }
 }

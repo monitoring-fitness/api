@@ -3,11 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { TrainingTemplate, User, UserDocument } from 'src/schema/user.schema';
 import { disconnect, Model } from 'mongoose';
 import * as dayjs from 'dayjs';
-import { DailyLife, Plan } from '../../schema/plan.schema';
+import { DailyLife, Plan } from '../schema/plan.schema';
 import { CreatePlanDto } from './dto/createPlan.dto';
-import { DailyWorkOutStatus } from '../../core/interface';
-import { test_id } from '../train/train.service';
-import { PlanCode } from '../../domain/business-code';
+import { DailyWorkOutStatus } from '../core/interface';
+import { test_id } from '../train/train-boilerplate.service';
+import { PlanCode } from '../common/business-code';
 
 // S-TODO: 找个合适的地方存放 ...
 const getBetweenDaysUnix = (

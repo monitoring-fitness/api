@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import {} from '../../module/train/dto/train.dto';
+import {} from '../../train/dto/train.dto';
 
 export class AdjustDailyTrainDto {
   @IsString()

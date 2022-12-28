@@ -17,7 +17,7 @@ const PlanInfoSchema = SchemaFactory.createForClass(PlanInfo);
 @Schema()
 export class TrainInfo extends Document {
   @Prop()
-  personal_train_temples: string[];
+  personal_train_boilerplate: string[];
 
   @Prop()
   personal_train_actions: string[];

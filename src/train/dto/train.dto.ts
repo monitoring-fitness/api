@@ -15,7 +15,7 @@ import {
   ITrainingTemplate,
   IAction,
   WeightUnit,
-} from '../../../core/interface';
+} from '../../core/interface';
 import { Type } from 'class-transformer';
 
 export class ActionDto {
@@ -40,20 +40,6 @@ export class ActionDto {
   @Min(1)
   @Max(10)
   default_rpe: number;
-}
-
-export class CreateTrainingTemplateDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-  @IsString()
-  @IsNotEmpty()
-  memo: string;
-  @IsArray()
-  @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => ActionDto)
-  schedule: Array<ActionDto>;
 }
 
 export class CreatePrivateActionDto implements Omit<ActionBasicInfo, '_id'> {
