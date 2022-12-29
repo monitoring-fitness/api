@@ -4,31 +4,33 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { UserSignupDto } from 'src/core/dto';
 import { ResponseError } from 'src/common/dto/response.dto';
 import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
 import { User } from './schema/user.schema';
-import { Iuser } from './interface/user.interface';
 import { UserSigninDto } from './dto/user-signin.dto';
+import { UserSignupDto } from './dto/user-signup.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private userModel: Model<Iuser>,
+    @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
   ) {}
 
   async signUp(authCredentialsDto: UserSignupDto): Promise<void> {
-    const user = new User();
-    user._id = uuidv4();
-    user.name = authCredentialsDto.name;
-    user.email = authCredentialsDto.email;
-    user.avatar_url = authCredentialsDto.avatar_url;
-    user.salt = await bcrypt.genSalt();
-    user.pass_word = await bcrypt.hash(authCredentialsDto.pass_word, user.salt);
-    await this.userModel.create(user);
+    const salt = await bcrypt.genSalt();
+    const saltedPassword = await bcrypt.hash(
+      authCredentialsDto.pass_word,
+      salt,
+    );
+    await this.userModel.create({
+      _id: uuidv4(),
+      ...authCredentialsDto,
+      pass_word: saltedPassword,
+    });
   }
 
+  // s-todo: token刷新逻辑？
   async signIn(loginDto: UserSigninDto) {
     const user = await this.userModel.findOne({
       name: loginDto.name,

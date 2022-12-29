@@ -1,9 +1,13 @@
-import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
-import { Schema as MongooseSchema } from 'mongoose';
-import { Action, ActionSchema, User } from './user.schema';
-import { DailyWorkOutStatus } from '../core/interface';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types, SchemaTypes } from 'mongoose';
+import { DailyWorkOutStatus } from 'src/common/interface/train-basic.interface';
+import {
+  Action,
+  ActionSchema,
+  TrainBoilerPlate,
+} from 'src/train/schema/train-boilerplate.schema';
 
-@Schema({ _id: false })
+@Schema({ _id: true })
 export class DailyLife {
   @Prop()
   status: DailyWorkOutStatus;
@@ -11,27 +15,22 @@ export class DailyLife {
   completed_date: number;
   @Prop()
   to_perform_date: number;
-  @Prop()
-  snap_card_id: number;
+  @Prop({ type: SchemaTypes.ObjectId, ref: TrainBoilerPlate.name })
+  snap_train_boilerplate_id: Types.ObjectId;
   @Prop({ type: [ActionSchema], default: [] })
   schedule: Array<Action>;
 }
 
 export const DailyLifeSchema = SchemaFactory.createForClass(DailyLife);
 
-@Schema({ id: false })
+@Schema({ id: true, versionKey: false })
 export class Plan {
-  @Prop()
-  id: string;
-  // s-todo: 这种写法是为了什么？
-  // @Prop({ type: MongooseSchema.Types.ObjectId, ref: () => User })
-  // user_id?: User | string;
   @Prop()
   user_id?: string;
   @Prop()
   name: string;
   @Prop()
-  memo: string;
+  intro: string;
   @Prop({ type: [DailyLifeSchema], default: [] })
   daily_life: Array<DailyLife>;
   @Prop()

@@ -9,13 +9,10 @@ import {
 export class CreatePlanDto {
   @IsString()
   @IsNotEmpty()
-  user_id: string;
-  @IsString()
-  @IsNotEmpty()
   name: string;
   @IsString()
   @IsNotEmpty()
-  memo: string;
+  intro: string;
   @IsNumber()
   @IsNotEmpty()
   start_time: number;
@@ -24,5 +21,5 @@ export class CreatePlanDto {
   end_time: number;
   @IsArray()
   @ArrayNotEmpty()
-  week_cycle_template_id: number[];
+  week_cycle_boilerplate_ids: string[];
 }

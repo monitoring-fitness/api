@@ -13,7 +13,7 @@ import { User, UserSchema } from './schema/user.schema';
     JwtModule.register({
       secret: 'topawesomesecret',
       signOptions: {
-        expiresIn: 3600,
+        expiresIn: 3600 * 24 * 7,
       },
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),

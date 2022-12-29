@@ -23,8 +23,7 @@ export class TrainBoilerplateController {
     return new ResponseSuccess(PlanCode2Message[PlanCode.successCreated]);
   }
   @Get('get/all')
-  async getAll() {
-    await this.trainBoilerplateService.getAll();
-    return new ResponseSuccess(PlanCode2Message[PlanCode.successGetAll]);
+  async getAll(@User() user: Iuser) {
+    return await this.trainBoilerplateService.getAll(user);
   }
 }

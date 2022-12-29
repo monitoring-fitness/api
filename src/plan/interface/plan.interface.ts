@@ -1,9 +1,10 @@
-import { IAction } from './train.interface';
-import { DailyWorkOutStatus } from './common';
+import { Document } from 'mongoose';
+import { DailyWorkOutStatus } from 'src/common/interface/train-basic.interface';
+import { IAction } from 'src/train/interface/train-boilerplate.interface';
 
 export interface IDailyLife {
   status: DailyWorkOutStatus;
-  snap_template_id: string; // 使用的卡片id快照,为了能够实现替换未来相关卡片
+  snap_train_boilerplate_id: string; // 使用的卡片id快照,为了能够实现替换未来相关卡片
   /**
    * 具体要做的动作，以及每组具体做的内容
    */
@@ -17,10 +18,10 @@ export interface IDailyLife {
   >;
 }
 
-export interface IPlan {
+export interface IPlan extends Document {
   user_id: string;
   name: string;
-  memo: string; // 计划说明
+  intro: string; // 计划说明
   daily_life?: Array<IDailyLife>;
   create_time: number;
   start_time: number;

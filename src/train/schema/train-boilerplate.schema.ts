@@ -1,6 +1,10 @@
-import { ActionType, IAction, WeightUnit } from '../../core/interface';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import {
+  ActionType,
+  WeightUnit,
+} from 'src/common/interface/train-basic.interface';
+import { IAction } from '../interface/train-boilerplate.interface';
 
 @Schema()
 export class Action {
@@ -20,7 +24,10 @@ export class Action {
 
 export const ActionSchema = SchemaFactory.createForClass(Action);
 
-@Schema()
+@Schema({
+  versionKey: false,
+  _id: true,
+})
 export class TrainBoilerPlate extends Document {
   @Prop()
   name: string;
@@ -32,7 +39,7 @@ export class TrainBoilerPlate extends Document {
   create_time: number;
   @Prop()
   update_time: number;
-  @Prop({ type: ActionSchema })
+  @Prop({ type: [ActionSchema] })
   schedule: IAction[];
 }
 

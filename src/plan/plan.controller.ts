@@ -1,9 +1,12 @@
 import { PlanService } from './plan.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { PlanCode } from 'src/common/business-code';
-import { CreatePlanDto } from '../core/dto';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import * as dayjs from 'dayjs';
+import { AuthGuard } from '@nestjs/passport';
+import { CreatePlanDto } from './dto/create-plan.dto';
+import { Iuser } from '../auth/interface/user.interface';
+import { User } from 'src/common/decorator/user.decorator';
 
+@UseGuards(AuthGuard())
 @Controller('plan')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
@@ -15,7 +18,6 @@ export class PlanController {
   //   return await this.planService.giveUpOneDay(dto);
   // }
   //
-  // // S-TODO: 需要一些mongose的技巧 ...
   // @Patch('replace')
   // /**
   //  * 替换某一个训练卡片
@@ -37,7 +39,6 @@ export class PlanController {
   // async reRankCalendar(@Body() dto: RerankCalendarDto) {
   //   return await this.planService.rerank(dto);
   // }
-  // // S-TODO: 增加特定id注解,来标识要获取的plan
   // @Get()
   // /**
   //  * 获取一个指定计划
@@ -47,20 +48,28 @@ export class PlanController {
   //
   //   return data.schedules;
   // }
-  @Get('today/workout')
-  async getTodayWorkout() {
-    const lives = await this.planService.fetchToPerformWorkingLives([
-      dayjs().unix(),
-    ]);
+  @Get('perform/:id')
+  async performPlan(@Param('id') id: string, @User() user: Iuser) {
+    return await this.planService.performPlan(id, user);
+  }
+
+  @Get('get/all')
+  async getAll(@User() user: Iuser) {
+    return await this.planService.getAll(user);
+  }
+
+  @Get('get/workout/today')
+  async getTodayWorkout(@User() user: Iuser) {
+    const lives = await this.planService.getToPerformWorkingLives(
+      // [dayjs().unix()],
+      [1672278531],
+      user,
+    );
     return lives?.[0];
   }
+
   @Post('create') // Put 是幂等的，创建一个计划是非幂等操作（多次创建相同计划是拒绝的），要用POST请求。
-  async createPlan(@Body() dto: CreatePlanDto) {
-    try {
-      return await this.planService.cretePlan(dto);
-    } catch (error) {
-      const code = error as PlanCode;
-      return code;
-    }
+  async create(@Body() planDto: CreatePlanDto, @User() user: Iuser) {
+    return await this.planService.crete(planDto, user);
   }
 }
